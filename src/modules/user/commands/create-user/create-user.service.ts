@@ -1,40 +1,44 @@
-import { ID } from '@libs/ddd/domain/value-objects/id.value-object';
 import { UserRepositoryPort } from '@modules/user/database/user.repository.port';
-import { ConflictException } from '@libs/exceptions';
 import { Address } from '@modules/user/domain/value-objects/address.value-object';
-import { Email } from '@modules/user/domain/value-objects/email.value-object';
-import { CreateUserUoW } from '@src/infrastructure/database/units-of-work';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { Err, Ok, Result } from 'oxide.ts';
 import { CreateUserCommand } from './create-user.command';
-import { UserEntity } from '../../domain/entities/user.entity';
+import { UserAlreadyExistsError } from '@modules/user/domain/user.errors';
+import { AggregateID } from '@libs/ddd';
+import { UserEntity } from '@modules/user/domain/user.entity';
+import { ConflictException } from '@libs/exceptions';
+import { Inject } from '@nestjs/common';
+import { USER_REPOSITORY } from '../../user.di-tokens';
 
-export class CreateUserService {
+@CommandHandler(CreateUserCommand)
+export class CreateUserService implements ICommandHandler {
   constructor(
-    // no direct dependency on a repository, instead depends on a port
-    private readonly userRepo: UserRepositoryPort,
+    @Inject(USER_REPOSITORY)
+    protected readonly userRepo: UserRepositoryPort,
   ) {}
 
-  async execute(command: CreateUserCommand): Promise<ID> {
-    // Wrapping everything in a UnitOfWork so events get included in a transaction
-    return CreateUserUoW.execute(async () => {
-      // user uniqueness guard
-      if (await this.userRepo.exists(command.email)) {
-        throw new ConflictException('User already exists');
-      }
-
-      const user = UserEntity.create({
-        email: new Email(command.email),
-        address: new Address({
-          country: command.country,
-          postalCode: command.postalCode,
-          street: command.street,
-        }),
-      });
-
-      user.someBusinessLogic();
-
-      const created = await this.userRepo.save(user);
-
-      return created.id;
+  async execute(
+    command: CreateUserCommand,
+  ): Promise<Result<AggregateID, UserAlreadyExistsError>> {
+    const user = UserEntity.create({
+      email: command.email,
+      address: new Address({
+        country: command.country,
+        postalCode: command.postalCode,
+        street: command.street,
+      }),
     });
+
+    try {
+      /* Wrapping operation in a transaction to make sure
+         that all domain events are processed atomically */
+      await this.userRepo.transaction(async () => this.userRepo.insert(user));
+      return Ok(user.id);
+    } catch (error: any) {
+      if (error instanceof ConflictException) {
+        return Err(new UserAlreadyExistsError(error));
+      }
+      throw error;
+    }
   }
 }

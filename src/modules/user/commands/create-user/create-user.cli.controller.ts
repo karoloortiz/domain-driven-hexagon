@@ -1,24 +1,19 @@
-import {
-  createUserCliLoggerSymbol,
-  createUserSymbol,
-} from '@modules/user/user.providers';
-import { Inject } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { Command, Console } from 'nestjs-console';
-import { Logger } from '@libs/ddd/domain/ports/logger.port';
+import { CommandBus } from '@nestjs/cqrs';
 import { CreateUserCommand } from './create-user.command';
-import { CreateUserService } from './create-user.service';
+import { LoggerPort } from '@libs/ports/logger.port';
 
-// Allows creating a user using CLI
+// Allows creating a user using CLI (Command Line Interface)
 @Console({
   command: 'new',
   description: 'A command to create a user',
 })
 export class CreateUserCliController {
   constructor(
-    @Inject(createUserSymbol)
-    private readonly service: CreateUserService,
-    @Inject(createUserCliLoggerSymbol)
-    private readonly logger: Logger,
+    private readonly commandBus: CommandBus,
+    @Inject(Logger)
+    private readonly logger: LoggerPort,
   ) {}
 
   @Command({
@@ -38,8 +33,8 @@ export class CreateUserCliController {
       street,
     });
 
-    const id = await this.service.execute(command);
+    const result = await this.commandBus.execute(command);
 
-    this.logger.log('User created:', id.value);
+    this.logger.log('User created:', result.unwrap());
   }
 }
