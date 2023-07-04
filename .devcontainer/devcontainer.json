@@ -18,6 +18,27 @@
 			"helm": "latest",
 			"minikube": "latest"
 		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"mgmcdermott.vscode-language-babel",
+				"vmsynkov.colonize",
+				"alexkrechik.cucumberautocomplete",
+				"fabiospampinato.vscode-diff",
+				"ms-azuretools.vscode-docker",
+				"Huuums.vscode-fast-folder-structure",
+				"eamodio.gitlens",
+				"VisualStudioExptTeam.vscodeintellicode",
+				"VisualStudioExptTeam.intellicode-api-usage-examples",
+				"Swellaby.node-pack",
+				"esbenp.prettier-vscode",
+				"sensourceinc.vscode-sql-beautify",
+				"hbenl.vscode-test-explorer",
+				"redhat.vscode-yaml",
+				"streetsidesoftware.code-spell-checker"
+			]
+		}
 	}
 	
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

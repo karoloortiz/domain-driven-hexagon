@@ -6,15 +6,15 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const options = new DocumentBuilder().build();
+  // const options = new DocumentBuilder().build();
 
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('docs', app, document);
+  // const document = SwaggerModule.createDocument(app, options);
+  // SwaggerModule.setup('docs', app, document);
 
-  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
+  // app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
 
-  app.enableShutdownHooks();
+  // app.enableShutdownHooks();
 
-  await app.listen(3000);
+  // await app.listen(3000);
 }
 bootstrap();

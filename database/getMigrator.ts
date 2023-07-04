@@ -14,6 +14,8 @@ dotenv.config({ path: envPath });
 
 export async function getMigrator() {
   const pool = await createPool(
+    // `mysql://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+
     `postgres://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}`,
   );
 

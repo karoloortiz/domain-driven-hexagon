@@ -1,5 +1,13 @@
 {
   "cucumberautocomplete.steps": ["tests/**/*.ts"],
   "cucumberautocomplete.strictGherkinCompletion": true,
-  "cSpell.words": ["instanceof", "Slonik"]
+  "cSpell.words": [
+    "cqrs",
+    "depcruise",
+    "instanceof",
+    "jestrc",
+    "nestjs",
+    "Slonik",
+    "typeorm"
+  ],
 }

@@ -1,5 +1,5 @@
-import { InjectPool } from 'nestjs-slonik';
-import { DatabasePool, sql } from 'slonik';
+// import { InjectPool } from 'nestjs-slonik';
+// import { DatabasePool, sql } from 'slonik';
 import { UserRepositoryPort } from './user.repository.port';
 import { z } from 'zod';
 import { UserMapper } from '../user.mapper';
@@ -20,7 +20,7 @@ export const userSchema = z.object({
   updatedAt: z.preprocess((val: any) => new Date(val), z.date()),
   email: z.string().email(),
   country: z.string().min(1).max(255),
-  postalCode: z.string().min(1).max(20),
+  postal_code: z.string().min(1).max(20),
   street: z.string().min(1).max(255),
   role: z.nativeEnum(UserRoles),
 });

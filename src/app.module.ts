@@ -8,9 +8,11 @@ import { RequestContextModule } from 'nestjs-request-context';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ContextInterceptor } from './libs/application/context/ContextInterceptor';
 import { ExceptionInterceptor } from '@libs/application/interceptors/exception.interceptor';
-import { postgresConnectionUri } from './configs/database.config';
+import { mysqlConnectionUri } from './configs/database.config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+//
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 const interceptors = [
   {
@@ -27,8 +29,12 @@ const interceptors = [
   imports: [
     EventEmitterModule.forRoot(),
     RequestContextModule,
-    SlonikModule.forRoot({
-      connectionUri: postgresConnectionUri,
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      url: mysqlConnectionUri,
+      // entities: [],
+      // migrations: ['mig/**/*.ts'],
+      synchronize: false,
     }),
     CqrsModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -38,7 +44,7 @@ const interceptors = [
 
     // Modules
     UserModule,
-    WalletModule,
+    // WalletModule,
   ],
   controllers: [],
   providers: [...interceptors],

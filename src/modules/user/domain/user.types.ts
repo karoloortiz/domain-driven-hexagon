@@ -1,6 +1,7 @@
 import { Address } from './value-objects/address.value-object';
 
 // All properties that a User has
+
 export interface UserProps {
   role: UserRoles;
   email: string;

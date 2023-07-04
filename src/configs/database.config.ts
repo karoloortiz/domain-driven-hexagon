@@ -4,7 +4,7 @@ import '../libs/utils/dotenv';
 // https://github.com/Sairyss/backend-best-practices#configuration
 
 export const databaseConfig = {
-  type: 'postgres',
+  type: 'mysql',
   host: get('DB_HOST').required().asString(),
   port: get('DB_PORT').required().asIntPositive(),
   username: get('DB_USERNAME').required().asString(),
@@ -12,4 +12,6 @@ export const databaseConfig = {
   database: get('DB_NAME').required().asString(),
 };
 
-export const postgresConnectionUri = `postgres://${databaseConfig.username}:${databaseConfig.password}@${databaseConfig.host}/${databaseConfig.database}`;
+export const mysqlConnectionUri = `${databaseConfig.type}://${databaseConfig.username}:${databaseConfig.password}@${databaseConfig.host}:${databaseConfig.port}/${databaseConfig.database}`;
+
+// export const postgresConnectionUri = `postgres://${databaseConfig.username}:${databaseConfig.password}@${databaseConfig.host}/${databaseConfig.database}`;
